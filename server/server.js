@@ -15,7 +15,7 @@ try{
 res.json(newBlog.rows[0]);
 }
 catch(error){
-console.log(err.message)
+console.log(error.message)
 }
 })
 app.get("/blogs",async(req,res)=>{
@@ -38,18 +38,22 @@ res.json(blog.rows)
  console.error(error.message);
     }
  })   
-app.put("/blogs/:id",async(req,res)=>{
-    try{
-const {id}=req.params;
-const {description}=req.body;
+ app.put("/blogs/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;
 
-const updateblog=await pool.query("UPDATE writeblog SET description=$1 where blog_id=$2",[description,id]);
-res.json("Blog description was updated")
+        const updateBlog = await pool.query(
+            "UPDATE writeblog SET title = $1, description = $2 WHERE blog_id = $3",
+            [title, description, id]
+        );
+
+        res.json("Blog title and description were updated");
+    } catch (err) {
+        console.error(err.message);
     }
-    catch(err){
-console.error(err.message);
-    }
-})
+});
+
 app.delete("/blogs/:id",async(req,res)=>{
    try{
 const {id}=req.params;
